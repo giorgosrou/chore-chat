@@ -4,7 +4,7 @@ import Button from "./Button";
 
 const Login = () => {
 
-    const [isLoggedIn, setisLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState("");
@@ -32,13 +32,13 @@ const Login = () => {
                 {isLoggedIn
                     ?
                         <>
-                            <Button name = "Login"   onClick={handleSignIn} />
-                            <Button name = "Register" secondary onClick={() => setisLoggedIn(false)} />
+                            <Button name = "Login"   onClick = {handleSignIn} />
+                            <Button name = "Register" secondary onClick={() => setIsLoggedIn(false)} />
                         </>
                     :
                         <>
                             <Button name = "Register" onClick={handleRegister} />
-                            <Button name = "Login"  secondary onClick={() => setisLoggedIn(true)} />
+                            <Button name = "Login"  secondary onClick={() => setIsLoggedIn(true)} />
                         </>
                 }
             </div>
