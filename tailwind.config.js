@@ -31,7 +31,7 @@ module.exports = {
       },
       backgroundImage: {
         pattern:
-         "url('https://images.freeimages.com/365/images/previews/b0c/icon-pattern-backgrounds-53906.jpg')",
+         "url('https://img.freepik.com/premium-vector/vector-seamless-pattern-office-work-supplies_8071-21261.jpg')",
       },
     },
   },

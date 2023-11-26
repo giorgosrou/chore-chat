@@ -4,11 +4,13 @@ import Header from "../Components/Header";
 
 const Layout = () => {
     return (
-        <div>
+        <div className="h-(100vh) flex flex-col">
             <Header />
-            <Outlet/>
+            <div className="bg-pattern flex-1 min-h-[90vh] opacity-20 overflow-y-scroll ">
+                <Outlet/>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default Layout;

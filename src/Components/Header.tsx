@@ -6,7 +6,7 @@ const logo = require ("../Assets/logo.png");
 
 const Header = () => {
     return (
-        <div className="flex flex-wrap gap-5 justify-between items-center sm:flex-row bg-gradient-to-r from-myorange to-mygreen px-5 py-5">
+        <div className="flex flex-wrap gap-5 justify-between items-center sm:flex-row bg-gradient-to-r from-black to-black px-5 py-5">
             <Tilt className="Tilt br2 shadow-2" options={{ max : 50 }} style={{ height: 70, width: 70 }}>
                 <img  src={logo} alt='logo' className="cursor-pointer" />
             </Tilt>
