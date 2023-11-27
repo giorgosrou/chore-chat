@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import Input from "./Input";
 import Button from "./Button";
+import { BE_signUp } from "../Backend/Queries";
 
 const Login = () => {
 
@@ -8,15 +9,23 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState("");
+    const [registerLoading, setRegisterLoading] = useState(false);
 
     const handleRegister = () => {
         const data = {email, password, validPassword}
         console.log(data)
+        BE_signUp(data, setRegisterLoading , reset)
     }
 
     const handleSignIn = () => {
-        const data = { email, password}
+        const data = { email, password, validPassword}
         console.log(data)
+    }
+
+    const reset = () => {
+        setEmail('');
+        setPassword('');
+        setValidPassword('');
     }
 
 
@@ -32,12 +41,12 @@ const Login = () => {
                 {isLoggedIn
                     ?
                         <>
-                            <Button name = "Login"   onClick = {handleSignIn} />
+                            <Button name = "Login" onClick = {handleSignIn} />
                             <Button name = "Register" secondary onClick={() => setIsLoggedIn(false)} />
                         </>
                     :
                         <>
-                            <Button name = "Register" onClick={handleRegister} />
+                            <Button name = "Register" loading = {registerLoading} onClick={handleRegister} />
                             <Button name = "Login"  secondary onClick={() => setIsLoggedIn(true)} />
                         </>
                 }
