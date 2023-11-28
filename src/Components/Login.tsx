@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import Input from "./Input";
 import Button from "./Button";
-import { BE_signUp } from "../Backend/Queries";
+import { BE_signIn, BE_signUp } from "../Backend/Queries";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 
@@ -10,16 +11,19 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState("");
     const [registerLoading, setRegisterLoading] = useState(false);
+    const [loginLoading, setLoginLoading] = useState(false);
+    const goTo = useNavigate();
 
     const handleRegister = () => {
         const data = {email, password, validPassword}
         console.log(data)
-        BE_signUp(data, setRegisterLoading , reset)
+        BE_signUp(data, setRegisterLoading , reset, goTo)
     }
 
     const handleSignIn = () => {
         const data = { email, password, validPassword}
         console.log(data)
+        BE_signIn(data, setLoginLoading , reset, goTo)
     }
 
     const reset = () => {
@@ -41,7 +45,7 @@ const Login = () => {
                 {isLoggedIn
                     ?
                         <>
-                            <Button name = "Login" onClick = {handleSignIn} />
+                            <Button name = "Login" loading = {loginLoading} onClick = {handleSignIn} />
                             <Button name = "Register" secondary onClick={() => setIsLoggedIn(false)} />
                         </>
                     :
