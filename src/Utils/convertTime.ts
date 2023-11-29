@@ -1,5 +1,5 @@
 import moment from "moment";
 
-export default function convertTime(date:string) {
-    moment(date).format('llll');
+export default function convertTime(date:string):string | undefined {
+    return moment(date).format('llll');
 }

@@ -1,19 +1,16 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "./Firebase";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { toastError, toastSuccess } from "../Utils/toasts";
 import { catchErr } from "../Utils/catchErr";
-import { Form, NavigateFunction } from "react-router-dom";
-import { DocumentData, DocumentReference, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { NavigateFunction } from "react-router-dom";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { userType } from "../Types";
 import { defaultUser, setUser } from "../Redux/userSlice";
 import convertTime from "../Utils/convertTime";
 import avatarGenerator from "../Utils/avatarGenerator";
-import { Dispatch } from "react";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { AppDispatch } from "../Redux/store";
-
 
 type RegisterQueryData = {
     email: string;
@@ -28,7 +25,7 @@ type LoginQueryData = {
 //collections
 const usersCollection: string = "users"
 
-export const BE_signUp = async(
+export const BE_signUp = (
     data: RegisterQueryData,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>, 
     reset: () => void,
@@ -38,7 +35,7 @@ export const BE_signUp = async(
     setLoading(true);
     if (data.email && data.password) {
         if (data.password === data.validPassword) {
-            await createUserWithEmailAndPassword(auth, data.email, data.password)
+            createUserWithEmailAndPassword(auth, data.email, data.password)
             .then(async user => {
                 //generate user avatar given the username
                 const imageLink = avatarGenerator(user.user.email?.split('@')[0])
@@ -48,6 +45,7 @@ export const BE_signUp = async(
                     user.user.email?.split('@')[0] || '',
                     imageLink
                 );
+
                 //Store locally using redux and dispatch
                 dispatch(setUser(userInfo))
 
@@ -79,11 +77,11 @@ export const BE_signIn = (
     setLoading(true);
     if (data.email && data.password) {
         signInWithEmailAndPassword(auth, data.email, data.password)
-        .then(user => {
+        .then(async user => {
             toastSuccess('Successful login!');
             //update user isOnline to true
 
-            const userInfo = getUserInfo(user.user.uid)
+            const userInfo = await getUserInfo(user.user.uid)
             //Store locally using redux and dispatch
             dispatch(setUser(userInfo));
             setLoading(false);
@@ -110,9 +108,9 @@ const addUserToCollection = async (
         img,
         username,
         email,
-        ProfileEffectiveDate: serverTimestamp(),
+        creationTime: serverTimestamp(),
         lastSeen: serverTimestamp(),
-        bioDescription: `Hi my name is ${username}`,
+        bio: `Hi my name is ${username}`,
     });
     return getUserInfo(id)
 };
@@ -129,9 +127,9 @@ const getUserInfo = async (id:string): Promise<userType> => {
             username,
             email,
             img,
-            creationTime,//: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
-            lastSeen,//: lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
-            bio  
+            creationTime: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
+            lastSeen : lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
+            bio 
         };
     } else {
         toast.error("User not found!");
