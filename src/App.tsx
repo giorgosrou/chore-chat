@@ -5,13 +5,15 @@ import Layout from "./Pages/Layout";
 import ProfilePage from "./Pages/ProfilePage";
 import ChatPage from "./Pages/ChatPage";
 import ListPage from "./Pages/ListPage";
+import RegistrationPage from "./Pages/RegistrationPage";
 
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/auth" element = {<LoginPage />}/>
+                <Route path="/login" element = {<LoginPage />}/>
+                <Route path="/register" element = {<RegistrationPage />}/>
                 <Route path="/dashboard" element = {< Layout />}>
                     <Route index element = {<ListPage />}/>
                     <Route path="chat" element = {<ChatPage />}/>
