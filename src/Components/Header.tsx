@@ -1,7 +1,7 @@
 import React from "react";
 import { Tilt } from 'react-tilt';
 import Button from "./Button";
-const logo = require ("../Assets/logo.png");
+const logo = require ("../Assets/logo192.png");
 
 
 const Header = () => {

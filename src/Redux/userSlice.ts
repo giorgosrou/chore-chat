@@ -13,7 +13,9 @@ export const defaultUser: userType = {
 }
 
 const initialState = {
-
+    //user:[]
+    currentUser: defaultUser,
+    //currentSelectedUser:null
 }
 
 const userSlice = createSlice({
@@ -21,7 +23,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser:(state,action) => {
-            //set logged in user
+            state.currentUser = action.payload || defaultUser; // Update currentUser with the received user data
         },
         setUsers:(state,action) => {
             //set all users

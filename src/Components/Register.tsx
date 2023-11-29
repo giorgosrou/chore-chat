@@ -3,6 +3,7 @@ import Input from "./Input";
 import Button from "./Button";
 import { BE_signIn, BE_signUp } from "../Backend/Queries";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
 
@@ -11,11 +12,11 @@ const Register = () => {
     const [validPassword, setValidPassword] = useState("");
     const [registerLoading, setRegisterLoading] = useState(false);
     const goTo = useNavigate();
+    const dispatch = useDispatch();
 
     const handleRegister = () => {
         const data = {email, password, validPassword}
-        console.log(data)
-        BE_signUp(data, setRegisterLoading , reset, goTo)
+        BE_signUp(data, setRegisterLoading , reset, goTo, dispatch)
     }
 
     const reset = () => {

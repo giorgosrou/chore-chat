@@ -4,10 +4,15 @@ import { auth, db } from "./Firebase";
 import { ToastContainer, toast } from 'react-toastify';
 import { toastError, toastSuccess } from "../Utils/toasts";
 import { catchErr } from "../Utils/catchErr";
-import { NavigateFunction } from "react-router-dom";
+import { Form, NavigateFunction } from "react-router-dom";
 import { DocumentData, DocumentReference, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { userType } from "../Types";
-import { defaultUser } from "../Redux/userSlice";
+import { defaultUser, setUser } from "../Redux/userSlice";
+import convertTime from "../Utils/convertTime";
+import avatarGenerator from "../Utils/avatarGenerator";
+import { Dispatch } from "react";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { AppDispatch } from "../Redux/store";
 
 
 type RegisterQueryData = {
@@ -20,30 +25,33 @@ type LoginQueryData = {
     email: string;
     password: string;
 }
-
 //collections
 const usersCollection: string = "users"
 
-export const BE_signUp = (
+export const BE_signUp = async(
     data: RegisterQueryData,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>, 
     reset: () => void,
-    goTo: NavigateFunction
+    goTo: NavigateFunction,
+    dispatch: AppDispatch,
 ) => {
     setLoading(true);
     if (data.email && data.password) {
         if (data.password === data.validPassword) {
-            createUserWithEmailAndPassword(auth, data.email, data.password)
-            .then(user => {
-                
-                //todo: set image
+            await createUserWithEmailAndPassword(auth, data.email, data.password)
+            .then(async user => {
+                //generate user avatar given the username
+                const imageLink = avatarGenerator(user.user.email?.split('@')[0])
+                //add user to firebase db collection
+                const userInfo = await addUserToCollection(
+                    user.user.uid,user.user.email || '',
+                    user.user.email?.split('@')[0] || '',
+                    imageLink
+                );
+                //Store locally using redux and dispatch
+                dispatch(setUser(userInfo))
 
-                const userInfo = addUserToCollection(user.user.uid,user.user.email || '', user.user.email?.split('@')[0] || '','user.imgURL')
-
-                //todo: setUser info to store and local store
                 toastSuccess('You are now registered!');
-                
-
                 setLoading(false);
                 reset();
                 goTo('/dashboard')
@@ -65,20 +73,19 @@ export const BE_signIn = (
     data: LoginQueryData, 
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     reset: () => void,
-    goTo: NavigateFunction
+    goTo: NavigateFunction,
+    dispatch: AppDispatch
 ) => {
     setLoading(true);
     if (data.email && data.password) {
         signInWithEmailAndPassword(auth, data.email, data.password)
         .then(user => {
             toastSuccess('Successful login!');
-
             //update user isOnline to true
 
             const userInfo = getUserInfo(user.user.uid)
-
-            //set user to store!
-            
+            //Store locally using redux and dispatch
+            dispatch(setUser(userInfo));
             setLoading(false);
             reset();
             goTo('/dashboard')
@@ -110,7 +117,6 @@ const addUserToCollection = async (
     return getUserInfo(id)
 };
 
-// Fetch the user from collection
 const getUserInfo = async (id:string): Promise<userType> => {
     const userRef = doc(db, usersCollection, id);
     const userSnap = await getDoc(userRef);
@@ -123,8 +129,8 @@ const getUserInfo = async (id:string): Promise<userType> => {
             username,
             email,
             img,
-            creationTime,
-            lastSeen,
+            creationTime,//: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
+            lastSeen,//: lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
             bio  
         };
     } else {

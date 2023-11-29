@@ -1,4 +1,5 @@
 import { toast } from "react-toastify"
+import { toastError } from "./toasts"
 
 type Error = {
     code?: string
@@ -18,6 +19,10 @@ export const catchErr = (err: Error) => {
         toast.error("Wrong password or email");
     } else if (err.code === "auth/requires-recent-login") {
         toast.error("Logout and login before updating your profile");
+    } else if (err.code === "unavailable") {
+        toast.error("Firebase is unavailable");
+    } else if (err.code === "auth/invalid-login-credentials") {
+        toast.error("Invalid credentials!");
     } else {
         toast.error("An error occured!");
     }

@@ -8,9 +8,9 @@ export const toastSuccess = (message: string) => {
     toast.success(message);
 }
 
-export const toastWarning = (message: string) => {
-    toast.warning(message);
-}
+// export const toastWarning = (message: string) => {
+//     toast.warning(message);
+// }
 
 export const toastInfo = (message: string) => {
     toast.info(message);
