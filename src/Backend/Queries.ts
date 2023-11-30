@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { toastError, toastSuccess } from "../Utils/toasts";
 import { catchErr } from "../Utils/catchErr";
 import { NavigateFunction } from "react-router-dom";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { userType } from "../Types";
 import { defaultUser, setUser } from "../Redux/userSlice";
 import convertTime from "../Utils/convertTime";
@@ -78,14 +78,14 @@ export const BE_signIn = (
     if (data.email && data.password) {
         signInWithEmailAndPassword(auth, data.email, data.password)
         .then(async user => {
-            toastSuccess('Successful login!');
             //update user isOnline to true
+            await updateUserStatus(user.user.uid)
 
             const userInfo = await getUserInfo(user.user.uid)
-            //Store locally using redux and dispatch
             dispatch(setUser(userInfo));
             setLoading(false);
             reset();
+            toastSuccess('Successful login!');
             goTo('/dashboard')
         }).catch(err => {
             catchErr(err)
@@ -136,3 +136,39 @@ const getUserInfo = async (id:string): Promise<userType> => {
         return defaultUser;
     }
 }
+
+
+//possibly buggy
+const updateUserStatus = async (id:string) => {
+    const userRef = doc(db, usersCollection, id);
+    const currentTime = serverTimestamp();
+
+    await updateDoc(userRef, {
+        lastSeen: currentTime,
+        isOnline: true,
+    });
+    //getUpdatedStorageUser(id);
+};
+
+const getUpdatedStorageUser = async(id:string): Promise<userType> => {
+    const userRef = doc(db, usersCollection, id);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+        const {isOnline, username, email, img, creationTime, lastSeen, bio} = userSnap.data();
+        return { 
+            id: userSnap.id,    
+            isOnline,
+            username,
+            email,
+            img,
+            creationTime: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
+            lastSeen : lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
+            bio 
+        };
+    } else {
+        toast.error("User not found!");
+        return defaultUser;
+    }
+}
+
