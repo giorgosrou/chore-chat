@@ -24,6 +24,8 @@ const userSlice = createSlice({
     reducers: {
         setUser:(state,action) => {
             state.currentUser = action.payload || defaultUser; // Update currentUser with the received user data
+            // Save the updated user data to localStorage
+            localStorage.setItem('user', JSON.stringify(state.currentUser));
         },
         setUsers:(state,action) => {
             //set all users
