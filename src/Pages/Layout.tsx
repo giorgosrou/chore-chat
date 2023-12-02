@@ -6,7 +6,7 @@ const Layout = () => {
     return (
         <div className="h-(100vh) flex flex-col">
             <Header />
-            <div className="bg-pattern flex-1 min-h-[90vh] opacity-80 overflow-y-scroll ">
+            <div className="bg-pattern flex-1 min-h-[90vh]  overflow-y-scroll ">
                 <Outlet/>
             </div>
         </div>

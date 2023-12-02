@@ -1,19 +1,22 @@
 import React from "react";
+import { userType } from "../Types";
 
-const storedUserData = JSON.parse(localStorage.getItem('user') || '{}');
-const profileImage = storedUserData.img ;
-const profileName = `${storedUserData.username}` ;
-const accountCreationText = `Joined in ${storedUserData.creationTime}` ;
+type PropsType = {
+    user: userType;
+    handleClick?:() => void;
+};
 
-const UserHeaderInfo = () => {
+const UserHeaderInfo = ({user,handleClick}: PropsType) => {
     return(
-        <div className=" cursor-pointer flex  items-center gap-4" >
+        <div
+            onClick = {handleClick}
+            className = "cursor-pointer flex items-center gap-4" >
             <div>
-                <img className = "w-12 h-12  p-3 ring-white ring-2 rounded-full cursor-pointer" src={profileImage} alt="profileFoto" />
+                <img className = "w-12 h-12  p-3 ring-white ring-2 rounded-full cursor-pointer" src={user.img} alt="profileFoto" />
             </div>
             <div className="text-white">
-                <div className="-mb-1">{profileName}</div> 
-                <div className="text-sm text-gray">{accountCreationText}</div>
+                <div className="-mb-1">{user.username}</div> 
+                <div className="text-sm text-gray">Joined in {user.creationTime} </div>
             </div>
         </div>
     )
