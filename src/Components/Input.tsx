@@ -15,9 +15,7 @@ const Input = ({ name, type = "text", value, onChange }: InputProps) => {
                 type= {type}
                 placeholder = {`Enter ${name}`}
                 className="flex-1 placeholder-gray-300 bg-transparent px-3 py-1 border-2 border-gray-400 rounded-full "
-                
-            />
-                
+            />    
     );
 };
 

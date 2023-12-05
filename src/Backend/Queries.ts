@@ -98,7 +98,7 @@ export const BE_signIn = (
     }; 
 };
 
-export const BE_signOut = () => {
+export const BE_signOut = (dispatch:AppDispatch, goTo:NavigateFunction) => {
     const auth = getAuth();
     const user = auth.currentUser;
 
@@ -113,6 +113,10 @@ export const BE_signOut = () => {
             catchErr(err);
         });
     }
+
+    dispatch(setUser(defaultUser))
+    localStorage.removeItem('user');
+    goTo('/login')
 };
 
 const updateUserOnLogOut = async (id:string) => {
