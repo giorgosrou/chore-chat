@@ -22,14 +22,10 @@ const Header = () => {
     useEffect(() => {
         if (localStorageUser && localStorageUser.id) {
             dispatch(setUser(localStorageUser));
+        } else {
+            goTo('/login');
         }
       },[]);
-
-    useEffect(() => {
-    if (!localStorageUser && !localStorageUser.id) {
-        goTo('/login');
-    }
-    },[goTo, localStorageUser]);
 
     const handleSignOut = () => {
         setCurrentPage('/dashboard')
@@ -53,8 +49,6 @@ const Header = () => {
     const getCurrentPage = () => {
         return localStorage.getItem("user-page");
     };
-
-
 
     return (
         <div className="flex flex-wrap gap-5 justify-between items-center sm:flex-row bg-gradient-to-r from-black to-black px-5 py-5">
