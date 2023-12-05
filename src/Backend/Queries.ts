@@ -1,16 +1,17 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { auth, db } from "./Firebase";
 import { toast } from 'react-toastify';
 import { toastError, toastSuccess } from "../Utils/toasts";
 import { catchErr } from "../Utils/catchErr";
-import { NavigateFunction } from "react-router-dom";
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { userType } from "../Types";
 import { defaultUser, setUser } from "../Redux/userSlice";
 import convertTime from "../Utils/convertTime";
 import avatarGenerator from "../Utils/avatarGenerator";
 import { AppDispatch } from "../Redux/store";
+import { NavigateFunction } from "react-router-dom";
 
 type RegisterQueryData = {
     email: string;
@@ -97,6 +98,33 @@ export const BE_signIn = (
     }; 
 };
 
+export const BE_signOut = () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+        const userId = user.uid;
+
+        signOut(auth).then(async() => {
+            toastSuccess('Successful log out!');
+            //Update isOnline to false
+            await updateUserOnLogOut(userId);
+        }).catch((err) => {
+            catchErr(err);
+        });
+    }
+};
+
+const updateUserOnLogOut = async (id:string) => {
+    const userRef = doc(db, usersCollection, id);
+
+    try {
+        await updateDoc(userRef, { isOnline: false }); // Update isOnline to false
+    } catch (error) {
+        console.error('Error updating user status:', error);
+    }
+};
+
 const addUserToCollection = async (
     id:string,
     email: string,
@@ -137,8 +165,6 @@ const getUserInfo = async (id:string): Promise<userType> => {
     }
 }
 
-
-//possibly buggy
 const updateUserStatus = async (id:string) => {
     const userRef = doc(db, usersCollection, id);
     const currentTime = serverTimestamp();

@@ -8,6 +8,7 @@ import UserHeaderInfo from "./UserHeaderInfo";
 import { RootState } from "../Redux/store";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { BE_signOut } from "../Backend/Queries";
 const logo = require ("../Assets/logo192.png");
 
 const Header = () => {
@@ -16,7 +17,7 @@ const Header = () => {
     const goTo = useNavigate();
 
     const handleSignOut = () => {
-        
+        BE_signOut()
     }
 
     const toggleDropdown = () => {
@@ -71,7 +72,7 @@ const Header = () => {
                             <Link to= "/dashboard/profile" className="cursor-pointer hover: bg-gray-200 py-2 block" onClick= {() => handleGoToPage('/dashboard/profile')}>
                                 Profile
                             </Link>
-                            <Link to= "/login" className=" cursor-pointer hover: bg-gray-200 py-2 block" onClick= {() => handleSignOut}>
+                            <Link to= "/login" className=" cursor-pointer hover: bg-gray-200 py-2 block" onClick= {() => handleSignOut()}>
                                 Logout
                             </Link>
                         </ul>
