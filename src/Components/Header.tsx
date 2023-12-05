@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import {FiList} from "react-icons/fi";
 import { Tilt } from 'react-tilt';
@@ -9,6 +9,7 @@ import { RootState } from "../Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { BE_signOut } from "../Backend/Queries";
+import { setUser } from "../Redux/userSlice";
 const logo = require ("../Assets/logo192.png");
 
 const Header = () => {
@@ -16,6 +17,19 @@ const Header = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const goTo = useNavigate();
     const dispatch = useDispatch();
+    const localStorageUser = JSON.parse(localStorage.getItem('user') || '{}');   
+    
+    useEffect(() => {
+        if (localStorageUser && localStorageUser.id) {
+            dispatch(setUser(localStorageUser));
+        }
+      },[]);
+
+    useEffect(() => {
+    if (!localStorageUser && !localStorageUser.id) {
+        goTo('/login');
+    }
+    },[goTo, localStorageUser]);
 
     const handleSignOut = () => {
         setCurrentPage('/dashboard')
@@ -28,7 +42,8 @@ const Header = () => {
 
     const handleGoToPage = (page:string) => {
         goTo(page)
-        setCurrentPage(page)
+        if(page) setCurrentPage(page);
+        else setCurrentPage('/dashboard');
     };
 
     const setCurrentPage = (page:string) => {
@@ -38,6 +53,8 @@ const Header = () => {
     const getCurrentPage = () => {
         return localStorage.getItem("user-page");
     };
+
+
 
     return (
         <div className="flex flex-wrap gap-5 justify-between items-center sm:flex-row bg-gradient-to-r from-black to-black px-5 py-5">

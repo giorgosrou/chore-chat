@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Input from "./Input";
 import Button from "./Button";
-import { BE_signIn, BE_signUp } from "../Backend/Queries";
+import { BE_signIn } from "../Backend/Queries";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../Redux/store";
+import { setUser } from "../Redux/userSlice";
 
 const Login = () => {
 
@@ -12,7 +12,15 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [loginLoading, setLoginLoading] = useState(false);
     const goTo = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch();    
+    const localStorageUser = JSON.parse(localStorage.getItem('user') || '{}');
+   
+    useEffect(() => {
+        if (localStorageUser && localStorageUser.id) {
+            dispatch(setUser(localStorageUser));
+            goTo('/dashboard');
+        }
+      },[]);
 
     const handleSignIn = () => {
         const data = { email, password}

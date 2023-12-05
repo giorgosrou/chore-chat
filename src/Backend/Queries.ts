@@ -123,7 +123,7 @@ const updateUserOnLogOut = async (id:string) => {
     const userRef = doc(db, usersCollection, id);
 
     try {
-        await updateDoc(userRef, { isOnline: false }); // Update isOnline to false
+        await updateDoc(userRef, { isOnline: false });
     } catch (error) {
         console.error('Error updating user status:', error);
     }
@@ -180,25 +180,25 @@ const updateUserStatus = async (id:string) => {
     //getUpdatedStorageUser(id);
 };
 
-const getUpdatedStorageUser = async(id:string): Promise<userType> => {
-    const userRef = doc(db, usersCollection, id);
-    const userSnap = await getDoc(userRef);
+// const getUpdatedStorageUser = async(id:string): Promise<userType> => {
+//     const userRef = doc(db, usersCollection, id);
+//     const userSnap = await getDoc(userRef);
 
-    if (userSnap.exists()) {
-        const {isOnline, username, email, img, creationTime, lastSeen, bio} = userSnap.data();
-        return { 
-            id: userSnap.id,    
-            isOnline,
-            username,
-            email,
-            img,
-            creationTime: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
-            lastSeen : lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
-            bio 
-        };
-    } else {
-        toast.error("User not found!");
-        return defaultUser;
-    }
-}
+//     if (userSnap.exists()) {
+//         const {isOnline, username, email, img, creationTime, lastSeen, bio} = userSnap.data();
+//         return { 
+//             id: userSnap.id,    
+//             isOnline,
+//             username,
+//             email,
+//             img,
+//             creationTime: creationTime ? convertTime(creationTime.toDate()) : "No date yet",
+//             lastSeen : lastSeen ? convertTime(lastSeen.toDate()) : "No date yet",
+//             bio 
+//         };
+//     } else {
+//         toast.error("User not found!");
+//         return defaultUser;
+//     }
+// }
 
