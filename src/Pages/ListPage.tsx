@@ -1,10 +1,11 @@
 import React from "react";
+import SingleTaskList from "../Components/SingleTaskList";
 
 const ListPage = () => {
 
     return (
         <div>
-            <h1 >Listpage</h1>
+            <SingleTaskList />
         </div>
     )
 }
