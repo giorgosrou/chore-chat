@@ -80,7 +80,7 @@ const Header = () => {
                 {/* Profile Header icon and description */}
                 <div className="group relative" onClick={toggleDropdown} >
                     <UserHeaderInfo user = {currentUser} />
-                    <div className={` pt-5 absolute ${isDropdownOpen ? 'block' : 'hidden'} w-full min-w-max`}>
+                    <div className={`pt-5 absolute ${isDropdownOpen ? 'block' : 'hidden'} w-full min-w-max`}>
                         <ul className="w-full bg-white overflow-hidden rounded-md shadow-md text-gray-700 pt-1">
                             <Link to= "/dashboard/profile" className="cursor-pointer hover: bg-gray-200 py-2 block" onClick= {() => handleGoToPage('/dashboard/profile')}>
                                 Profile

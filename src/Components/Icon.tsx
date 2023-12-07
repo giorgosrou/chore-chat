@@ -15,7 +15,6 @@ const Icon = ({
     IconName,
     size = 20,
     className,
-    loading,
     ping,
     reduceOpacityOnHover,
     onClick
