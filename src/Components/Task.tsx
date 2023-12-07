@@ -15,7 +15,7 @@ const Task = () => {
                 <hr/>
                 <div>
                 <p>
-                    Description
+                    Description of the Task
                 </p>
                 <div className="flex justify-end">
                     <Icon IconName={MdEdit} reduceOpacityOnHover={true} />
