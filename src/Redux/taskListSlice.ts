@@ -26,6 +26,11 @@ const taskListSlice = createSlice({
 
         },
         addTaskList:(state,action) => {
+            const newTaskList = action.payload;
+            newTaskList.editMode = true;
+            newTaskList.tasks = [];
+            //state.currentTaskList.unshift(newTaskList);
+            
             
         }
     }

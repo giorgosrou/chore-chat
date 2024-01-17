@@ -5,13 +5,15 @@ import { auth, db } from "./Firebase";
 import { toast } from 'react-toastify';
 import { toastError, toastSuccess } from "../Utils/toasts";
 import { catchErr } from "../Utils/catchErr";
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { userType } from "../Types";
+import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { taskListType, userType } from "../Types";
 import { defaultUser, setUser } from "../Redux/userSlice";
 import convertTime from "../Utils/convertTime";
 import avatarGenerator from "../Utils/avatarGenerator";
 import { AppDispatch } from "../Redux/store";
 import { NavigateFunction } from "react-router-dom";
+import taskListSlice, { addTaskList, defaultTaskList } from "../Redux/taskListSlice";
+import { IoNewspaperOutline } from "react-icons/io5";
 
 type RegisterQueryData = {
     email: string;
@@ -25,6 +27,8 @@ type LoginQueryData = {
 }
 //collections
 const usersCollection: string = "users"
+const tasksCollection: string = "tasks"
+const taskListCollection: string = "taskList"
 
 export const BE_signUp = (
     data: RegisterQueryData,
@@ -201,4 +205,23 @@ const updateUserStatus = async (id:string) => {
 //         return defaultUser;
 //     }
 // }
+export const BE_addTaskList = async(dispatch:AppDispatch,id:string) => {
+    const userRef = doc(db, usersCollection, id);
+    const{title} = defaultTaskList
+    const list = await addDoc(collection(db,taskListCollection),{
+        title,
+        userId: userRef.id
+    })
+    const newDocSnap =await getDoc(doc(db, list.path))
+
+    if(newDocSnap.exists()) {
+        const newlyAddedDoc:taskListType = {
+            id:newDocSnap.id,
+            title:newDocSnap.data().title
+        }
+        dispatch(addTaskList(newlyAddedDoc))
+    } else {
+        toastError("BE_addTaskList:No such doc")
+    }
+}
 
